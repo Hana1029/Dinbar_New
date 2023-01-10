@@ -72,7 +72,7 @@ public class MemberController {
 		String password = data[1];
 		MemberModel input = new MemberModel();
 		input.setEmail(email);
-
+		 
 		List<MemberModel> selectMember = userDAO.selectMember(input);
 		String check = selectMember.get(0).getPassword();
 		System.out.println(password);
@@ -98,27 +98,14 @@ public class MemberController {
 			HttpSession session, HttpServletResponse response) throws IOException {
 		MemberModel input = new MemberModel();
 		input.setEmail(email);
+		input.setPassword(password);
 		List<MemberModel> selectMember = userDAO.selectMember(input);
-		String check = selectMember.get(0).getPassword();
+		if(selectMember.size()==0) {userDAO.insert(input);}
+		session.setAttribute("uid", password);
+		System.out.println("-------------------------------------");
+		System.out.println(email);
 		System.out.println(password);
-		System.out.println(check);
-
-		if (password.equals(check)) {
-			session.setAttribute("uid", email);
-//			Cookie cookie = new Cookie("SESSIONID", session.getId());
-//			response.addCookie(cookie);
-			System.out.println("成功登入!");
-			response.sendRedirect("/");
-		} else if (loginstatus == "true") {
-			System.out.println("第三方登入!!");
-			session.setAttribute("session_email", email);
-			session.setAttribute("session_password", password);
-			session.setAttribute("uid", email);
-			response.sendRedirect("/createMember");
-		} else {
-			System.out.println("登入失敗!!");
-			response.sendRedirect("/login");
-		}
+		System.out.println(loginstatus);
 	}
 
 	private boolean isValidEmail(String email) {

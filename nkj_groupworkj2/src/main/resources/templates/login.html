@@ -65,24 +65,52 @@ google.addEventListener('click',function(e){
 					)
 			    .then(function(response){
 			        console.log('google登入傳送後端成功',response)
+			        if('[[${session.uid}]]'!=null){location.assign("/");}
 		        },
 				function(err){console.error("google登入傳送後端錯誤",err)}
 		)},function(err){console.error("google登入錯誤",err)})
+		
 });
 //facebook登入按鈕加入監聽click事件，觸發-登入-api_response->後端(email,password,sign)
-facebook.addEventListener('click',function(e){
-    //可用 fetch() 傳輸後端
-        fblogin()
+function checkfblogin(){
+	console.log('1');
+	console.log('[[${session.uid}]]')
+	if(fbpassword!='undefined' && fbpassword!=null && fbpassword!=""){
+		console.log('2')
+		console.log('[[${session.uid}]]')
 		fetch(
-				'/doApiLogin?email='+ email 
-				+'&password='+ password
-				+'&loginstatus='+ sign
+				'/doApiLogin?email='+ fbemail 
+				+'&password='+ fbpassword
+				+'&loginstatus='+ fbsign
 				)
 		    .then(function(response){
 		        console.log('fb登入傳送後端成功',response)
+		        console.log('3')
+				console.log('[[${session.uid}]]')
+		        location.assign("/")
 	            },
 			    function(err){console.error("fb登入傳送後端錯誤",err)}
-	    )        
+	            
+	   		)
+	   	
+		//location.assign("/")
+	}else{
+		console.log('4')
+		console.log('[[${session.uid}]]')
+		setTimeout(checkfblogin,1000)
+		}
+}
+
+facebook.addEventListener('click',function(e){
+    //可用 fetch() 傳輸後端(寫在js裡面)    
+          fblogin()
+         
+	   	
+         checkfblogin()
+         
+         
+	   	
+	
 });
 </script>
 </body>

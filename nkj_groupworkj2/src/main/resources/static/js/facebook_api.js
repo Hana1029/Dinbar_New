@@ -1,4 +1,8 @@
 var accessToken;
+var fbsign;
+var fbname;
+var fbpassword;
+var fbemail;
 // 以下 SDK初始化	以下 SDK初始化	以下 SDK初始化	以下 SDK初始化	以下 SDK初始化	以下 SDK初始化	以下 SDK初始化	以下 SDK初始化	以下 SDK初始化
 window.fbAsyncInit = function() {
     FB.init({
@@ -10,12 +14,12 @@ window.fbAsyncInit = function() {
     FB.AppEvents.logPageView();
 // 加一個監聽器
     FB.Event.subscribe('auth.authResponseChange', function(response) {
-    console.log("fb監聽器建立",response);
+    console.log("fb監聽器回應",response);
     if (response.status === 'connected') {
-	  sign=true;
+	  fbsign=true;
       console.log('Logged in');
     } else {
-	  sign=false;
+	  fbsign=false;
       console.log('Not logged in');
     }
   });
@@ -36,42 +40,50 @@ window.onload =function(){
         if(response.status === 'connected') {  // 若為登入狀態則存Token
             accessToken = response.authResponse.accessToken;
             FB.api("/me?fields=name,email,id",function(response){
-                		name=response.name,
-                        email=response.email,
-                        password=response.id
+                		fbname=response.name
+                        fbemail=response.email
+                        fbpassword=response.id
                         })  	
             };
     });
 }
 
 // 登入函示，會放在登入按鈕上。
-function fblogin(){
+async function fblogin(){
     FB.login(function(response){
         if(response.authResponse){
+			FB.api("/me?fields=name,email,id",function(response){
+                	console.log(response.name)
+                	console.log(response.email)
+                	console.log(response.id)
+                	fbname=response.name
+                    fbemail=response.email
+                    fbpassword=response.id
+                    fbsign=true
+                    })
             console.log("login sucess")
-            FB.api("/me?fields=name,email,id",function(response){
-                		name=response.name,
-                        email=response.email,
-                        password=response.id
-                        })
         }else{
             console.log("facebook login fail")
         }
-        },{scope: 'public_profile,email'});
+        });
+    
     }
 
 // 登出函式，會放在登出按鈕上。
-function fblogout(){    
+async function fblogout(){    
     FB.getLoginStatus((response) => {
         console.log('res', response); // 這裡印出fb登入狀態
         if (response.status === 'connected') {  // 如果是連線狀態存下token，並登出刷新頁面，沒連線的話會叫你要連線。
             accessToken = response.authResponse.accessToken;
             console.log('logout success')
-            FB.logout(function(response){});
-            name=null;
-            password=null;
-            email=null;
+            FB.logout(function(response){
+			fbname=null;
+            fbpassword=null;
+            fbemail=null;
+            fbsign=false;
             location.reload()
+			});
+
         }
     });
 };

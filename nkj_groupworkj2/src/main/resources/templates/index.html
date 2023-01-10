@@ -19,9 +19,9 @@
 		$("#goLogin").click(function(e) {
 			const uid = '[[${session.uid}]]'
 			if(uid.length>0){
-				
 				signout()
 				fblogout()
+				alert('你已登出')
 				location.href ='/deletesession'
 			}else{
 				location.href = '/login';
@@ -120,6 +120,9 @@
 				</div>
 			</div>
 	</footer>
+	<script>
+	//alert('[[${session.uid}]]');
+	</script>
 </body>
 
 </html>

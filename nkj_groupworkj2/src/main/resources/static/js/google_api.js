@@ -42,6 +42,7 @@ function authenticate() {
                 		name=response.getBasicProfile().getName()
                         email=response.getBasicProfile().getEmail()
                         password=response.getBasicProfile().getId()
+                        sign=true
           },
             function(err) { console.error("Error signing in", err); });
 }
@@ -58,6 +59,7 @@ function signout(){
     name=null;
     email=null;
     password=null;
+    sign=false;
     return googleauth.signOut();
 }
 
